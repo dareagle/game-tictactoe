@@ -1,17 +1,16 @@
 package com.codingame.game;
 
-import java.util.Properties;
-
 import com.codingame.gameengine.core.AbstractPlayer.TimeoutException;
 import com.codingame.gameengine.core.AbstractReferee;
 import com.codingame.gameengine.core.GameManager;
+import com.codingame.gameengine.core.MultiplayerGameManager;
 import com.codingame.gameengine.module.entities.Curve;
 import com.codingame.gameengine.module.entities.GraphicEntityModule;
 import com.codingame.gameengine.module.entities.Sprite;
 import com.google.inject.Inject;
 
 public class Referee extends AbstractReferee {
-    @Inject private GameManager<Player> gameManager;
+    @Inject private MultiplayerGameManager<Player> gameManager;
     @Inject private GraphicEntityModule graphicEntityModule;
     private int[][] grid = new int[3][3];
 
@@ -22,7 +21,7 @@ public class Referee extends AbstractReferee {
     private static final int GRID_ORIGIN_X = (int) Math.round(1920 / 2 - CELL_SIZE);
 
     @Override
-    public Properties init(Properties params) {
+    public void init() {
         // Display the background image. The asset image must be in the directory src/main/resources/view/assets
         graphicEntityModule.createSprite()
                 .setImage("Background.jpg")
@@ -52,8 +51,6 @@ public class Referee extends AbstractReferee {
         gameManager.setFrameDuration(500);
 
         drawGrid();
-
-        return params;
     }
 
     private int convertX(double unit) {
@@ -156,7 +153,7 @@ public class Referee extends AbstractReferee {
                 
             }
 
-            gameManager.addToGameSummary(String.format("Player %s played (%d %d)", player.getNicknameToken(), targetRow, targetCol));
+            gameManager.addToGameSummary(String.format("%s played (%d %d)", player.getNicknameToken(), targetRow, targetCol));
 
             // update grid
             grid[targetRow][targetCol] = player.getIndex() + 1;
@@ -181,4 +178,5 @@ public class Referee extends AbstractReferee {
             gameManager.endGame();
         }
     }
+
 }
